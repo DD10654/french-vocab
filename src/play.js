@@ -130,7 +130,7 @@ const Play = () => {
 
   return (
 <div className="flex flex-col h-screen bg-gray-100">
-      <nav className="bg-teal-500 py-4">
+      <nav className="bg-[#2c3e50] py-4">
         <h1 className="text-lg font-bold text-center text-white">Play - {theme}</h1>
       </nav>
 
@@ -149,7 +149,7 @@ const Play = () => {
             onKeyPress={handleKeyPress}
           />
           <button
-            className="px-4 py-2 bg-teal-500 text-white rounded-r-md"
+            className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-r-md"
             onClick={handleCheckAnswer}
           >
             Check
