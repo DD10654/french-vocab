@@ -28,21 +28,23 @@ const Play = () => {
   const [showResult, setShowResult] = useState(false);
   const [result, setResult] = useState('');
 
-  const fetchQuestionArray = async (theme) => {
-    const exercisesCollectionRef = collection(db, 'exercises');
-    const docRef = doc(exercisesCollectionRef, theme);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
-      questionArray.forEach((innerArray, i) => {
-        innerArray.forEach((str, j) => {
-          array[i][j] = str.replace(/’/g, "'");
-        });
-      return questionArray;
-    } else {
-      return [];
-    }
-  };
+const fetchQuestionArray = async (theme) => {
+  const exercisesCollectionRef = collection(db, 'exercises');
+  const docRef = doc(exercisesCollectionRef, theme);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
+    questionArray.forEach((innerArray, i) => {
+      innerArray.forEach((str, j) => {
+        array[i][j] = str.replace(/’/g, "'");
+      });
+    });
+    return questionArray; 
+  } else {
+    return [];
+  }
+};
+
 
   useEffect(() => {
     const fetchQuestions = async () => {
