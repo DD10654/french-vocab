@@ -36,7 +36,7 @@ const fetchQuestionArray = async (theme) => {
     const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
     questionArray.forEach((innerArray, i) => {
       innerArray.forEach((str, j) => {
-        array[i][j] = str.replace(/’/g, "'");
+        questionArray[i][j] = str.replace(/’/g, "'");
       });
     });
     return questionArray; 
