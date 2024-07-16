@@ -29,22 +29,36 @@ const Play = () => {
   const [result, setResult] = useState('');
 
 const fetchQuestionArray = async (theme) => {
-  const exercisesCollectionRef = collection(db, 'exercises');
-  const docRef = doc(exercisesCollectionRef, theme);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
-    questionArray.forEach((innerArray, i) => {
-      innerArray.forEach((str, j) => {
-        questionArray[i][j] = str.replace(/’/g, "'");
+  try {
+    const exercisesCollectionRef = collection(db, 'exercises');
+    const docRef = doc(exercisesCollectionRef, theme);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
+
+      console.log('Original questionArray:', questionArray);
+
+      questionArray.forEach((innerArray, i) => {
+        innerArray.forEach((str, j) => {
+          if (typeof str === 'string') {
+            questionArray[i][j] = str.replace(/’/g, "'");
+          }
+        });
       });
-    });
-    return questionArray; 
-  } else {
+
+      console.log('Modified questionArray:', questionArray);
+
+      return questionArray;
+    } else {
+      console.log('Document does not exist.');
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching or processing data:', error);
     return [];
   }
 };
-
 
   useEffect(() => {
     const fetchQuestions = async () => {
