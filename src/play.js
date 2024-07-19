@@ -34,7 +34,7 @@ const Play = () => {
 
 const fetchQuestionArray = async (theme) => {
     const exercisesCollectionRef = collection(db, 'exercises');
-    const docRef = doc(exercisesCollectionRef, theme);
+    const docRef = doc(exercisesCollectionRef, `french-b1/${theme}/vocab`);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
