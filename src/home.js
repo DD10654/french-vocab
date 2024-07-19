@@ -11,6 +11,7 @@ const Home = () => {
     { title: "Le look", image: 'images/le-look.jpg'},
     { title: "L'environnement", image: 'images/l-environnement.jpg'},
     { title: "Les loisirs", image: 'images/les-loisirs.jpg'},  
+    { title: "Les aliments", image: 'images/les-aliments.jpg'},
     { title: "Les connecteurs logique", image: 'images/les-connecteurs-logique.jpg'},
     { title: "Les verbes", image: 'images/les-verbes.jpg'},
     { title: "Les Adjectifs", image: 'images/les-adjectifs.jpg'}
