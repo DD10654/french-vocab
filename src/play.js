@@ -137,11 +137,13 @@ const fetchQuestionArray = async (theme) => {
       setCurrentIndex(currentIndex + 1);
       setAnswer('');
       setCheckAnswer(true)
+      if (testMode == true) {
       if (numberOfIncorrectAnswers == 1) {
         setFailed("bg-red-200")
       }
       if (numberOfIncorrectAnswers >= 2) {
         navigate('/done', { replace: true, state: { failed: true } });
+      }
       }
     }, 2000);
 }}
