@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDoc, doc } from 'firebase/firestore';
 
@@ -17,9 +17,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const Play = () => {
-  const { theme } = useParams();
-  console.log(theme)
+  const location = useLocation();
   const navigate = useNavigate();
+  const { theme, numberOfQuestions, testMode } = location.state || {};
   const [answer, setAnswer] = useState('');
   const [questionArray, setQuestionArray] = useState([]);
   const [correctArray, setCorrectArray] = useState([]);
@@ -30,7 +30,25 @@ const Play = () => {
   const [numberOfCorrectAnswers, setCorrectAnswers] = useState(0)
   const [numberOfIncorrectAnswers, setIncorrectAnswers] = useState(0)
   const [runCheckAnswer, setCheckAnswer] = useState(true)
+  const [ failed, setFailed ] = useState("bg-gray-100")
 
+  useEffect(() => {
+    if (!theme) {
+      navigate('/', { replace: true });
+    }
+  }, [theme, navigate]);
+
+  useEffect(() => {
+    if (!numberOfQuestions) {
+      navigate('/', { replace: true });
+    }
+  }, [numberOfQuestions, navigate]);
+
+  useEffect(() => {
+    if (testMode == undefined) {
+      navigate('/', { replace: true });
+    }
+  }, [testMode, navigate]);
 
 const fetchQuestionArray = async (theme) => {
     const exercisesCollectionRef = collection(db, 'exercises');
@@ -78,7 +96,12 @@ const fetchQuestionArray = async (theme) => {
         newArray[i][1] = temp;
       }
     }
-    setQuestionArray(newArray);
+    if (numberOfQuestions == true) {
+      setQuestionArray(newArray);
+    }
+    else {
+      setQuestionArray(newArray.slice(0, numberOfQuestions));
+    }
   }, [questionArray]);
 
   const [isRandomized, setIsRandomized] = useState(false);
@@ -114,6 +137,12 @@ const fetchQuestionArray = async (theme) => {
       setCurrentIndex(currentIndex + 1);
       setAnswer('');
       setCheckAnswer(true)
+      if (numberOfIncorrectAnswers == 1) {
+        setFailed("bg-red-200")
+      }
+      if (numberOfIncorrectAnswers >= 2) {
+        navigate('/done', { replace: true, state: { failed: true } });
+      }
     }, 2000);
 }}
 
@@ -128,7 +157,7 @@ const fetchQuestionArray = async (theme) => {
   }
 
   function endGame(navigate) {
-    navigate('/done', { replace: true });
+    navigate('/done', { replace: true, state: { failed: false } });
   }
 
   useEffect(() => {
@@ -159,7 +188,7 @@ const buttons = letters.map((letter) =>
 );
 
   return (
-<div className="h-screen bg-gray-100">
+<div className={`h-screen ${failed}`}>
       <nav className="bg-[#2c3e50] py-4">
         <h1 className="text-lg font-bold text-center text-white">Play - {theme}</h1>
       </nav>
@@ -186,7 +215,7 @@ const buttons = letters.map((letter) =>
           </button>
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className="flex flex-wrap justify-center gap-2 mt-4">                
         {buttons}
       </div>
       <div className="grid justify-center mt-4">
