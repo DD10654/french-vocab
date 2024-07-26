@@ -137,13 +137,11 @@ const fetchQuestionArray = async (theme) => {
       setCurrentIndex(currentIndex + 1);
       setAnswer('');
       setCheckAnswer(true)
-      if (testMode == true) {
       if (numberOfIncorrectAnswers == 1) {
         setFailed("bg-red-200")
       }
-      if (numberOfIncorrectAnswers >= 2) {
+      if (numberOfIncorrectAnswers >= 3) {
         navigate('/done', { replace: true, state: { failed: true } });
-      }
       }
     }, 2000);
 }}
@@ -178,7 +176,14 @@ const fetchQuestionArray = async (theme) => {
     }
   };
 
-const letters = ["à", "á", "è", "é", "ê", "î", "ô", "û", "ç"];
+  const handleNextQuestion = () => {
+    setShowResult(false);
+    setCurrentIndex(currentIndex + 1);
+    setAnswer('');
+    setCheckAnswer(true)
+  }
+
+const letters = ["à", "á", "è", "é", "ê", "î", "ï", "ô", "û", "ç"];
 const buttons = letters.map((letter) =>
   <button
         className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md mx-1"
@@ -233,7 +238,17 @@ const buttons = letters.map((letter) =>
             <h2 className="text-lg font-bold">{result}</h2>
           </div>
         )}
+        <div className="grid justify-center mt-4">
+          <button
+        className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md mx-1"
+        style={{ display: `${showResult === true ? 'block' : 'none'}` }}
+        onClick={() => handleNextQuestion()}
+      >
+        Next Question
+  </button>
+  </div>
     </div>
+    
   );
 };
 
