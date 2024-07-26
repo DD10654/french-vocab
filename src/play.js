@@ -238,6 +238,7 @@ const buttons = letters.map((letter) =>
           <button
             className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md"
             onClick={() => handleNextQuestion()}
+            style={{ display: `${showResult === true ? 'block' : 'none'}` }}
           >
             Next Question
           </button>
