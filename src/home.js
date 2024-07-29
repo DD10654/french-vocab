@@ -5,16 +5,17 @@ const Home = () => {
   const themes = [
     { title: "L'internet", image: 'images/l-internet.jpg' },
     { title: "L'éducation", image: 'images/l-education.jpg' },
-    { title: 'La nourriture', image: 'images/la-nourriture.jpg' },
-    { title: "La santé", image: 'images/la-sante.jpg' },
-    { title: "Le séjour linguistique", image: 'images/le-sejour-linguistique.jpg' },
-    { title: "Le look", image: 'images/le-look.jpg' },
+    // { title: 'La nourriture', image: 'images/la-nourriture.jpg' },
+    // { title: "La santé", image: 'images/la-sante.jpg' },
+    // { title: "Le séjour linguistique", image: 'images/le-sejour-linguistique.jpg' },
+    // { title: "Le look", image: 'images/le-look.jpg' },
     { title: "L'environnement", image: 'images/l-environnement.jpg' },
     { title: "Les loisirs", image: 'images/les-loisirs.jpg' },
     { title: "Les aliments", image: 'images/les-aliments.jpg' },
     { title: "Les connecteurs logique", image: 'images/les-connecteurs-logique.jpg' },
     { title: "Les verbes", image: 'images/les-verbes.jpg' },
-    { title: "Les Adjectifs", image: 'images/les-adjectifs.jpg' }
+    // { title: "Les Adjectifs", image: 'images/les-adjectifs.jpg' },
+    { title: "MYP3 Unit 1", image: 'images/myp3-unit1.jpg'}
   ];
 
   return (
