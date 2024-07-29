@@ -14,6 +14,8 @@ const Setup = () => {
       }
     }, [theme, navigate]);
 
+    useEffect(() => {}, [numberOfQuestions, testMode])
+
     function handleStart() {
         navigate('/play', { state: { theme: theme, numberOfQuestions: numberOfQuestions, testMode: testMode }, replace: true });
         console.log("hi")

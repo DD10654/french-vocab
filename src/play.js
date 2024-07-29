@@ -62,6 +62,7 @@ const fetchQuestionArray = async (theme) => {
         innerArray.forEach((str, j) => {
           if (typeof str === 'string') {
             questionArray[i][j] = str.replace(/’/g, "'");
+            questionArray[i][j] = str.replace(/…/g, "...");
           }
         });
       });
@@ -179,7 +180,7 @@ const fetchQuestionArray = async (theme) => {
     setCheckAnswer(true)
   }
 
-const letters = ["à", "á", "è", "é", "ê", "î", "ô", "û", "ç"];
+const letters = ["à", "á", "â", "è", "é", "ê", "î", "í", "ô", "û", "ç"];
 const buttons = letters.map((letter) =>
   <button
         className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md mx-1"
