@@ -119,7 +119,6 @@ const fetchQuestionArray = async (theme) => {
   const wrongSound = new Audio('/wrong.mp3')
 
   function checkAnswer(answer) {
-    if (runCheckAnswer == true) {
     if (answer.toLowerCase().trim() === questionArray[currentIndex][1].toLowerCase()) {
       setCorrectArray([...correctArray, questionArray[currentIndex]]);
       setResult('Correct!');
@@ -141,7 +140,7 @@ const fetchQuestionArray = async (theme) => {
         navigate('/done', { replace: true, state: { failed: true } });
       }
       }
-}}
+}
 
   function checkArray() {
     if (currentIndex >= questionArray.length && wrongArray.length > 0) {
@@ -163,24 +162,28 @@ const fetchQuestionArray = async (theme) => {
     }
   }, [currentIndex, questionArray]);
 
-  const handleCheckAnswer = () => {
-    checkAnswer(answer);
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleCheckAnswer();
-    }
-  };
-
-  const handleNextQuestion = () => {
+    const handleNextQuestion = () => {
     setShowResult(false);
     setCurrentIndex(currentIndex + 1);
     setAnswer('');
     setCheckAnswer(true)
   }
 
-const letters = ["à", "á", "â", "è", "é", "ê", "î", "í", "ô", "û", "ç"];
+  const handleCheckAnswer = () => {
+    if (runCheckAnswer == true) {
+    checkAnswer(answer);
+    }
+    else {
+      handleNextQuestion()
+  };
+    
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleCheckAnswer();
+    }
+  };
+
+const letters = ["à", "á", "â", "è", "é", "ê", "î", "í", "ô", "œ", "û", "ç"];
 const buttons = letters.map((letter) =>
   <button
         className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md mx-1"
