@@ -14,6 +14,9 @@ const Home = () => {
     { title: "Les aliments", image: 'images/les-aliments.jpg' },
     { title: "Les connecteurs logique", image: 'images/les-connecteurs-logique.jpg' },
     { title: "Les verbes", image: 'images/les-verbes.jpg' },
+    { title: "ER Verbes", image: 'images/er-verbes.jpg' },
+    { title: "IR Verbes", image: 'images/ir-verbes.jpg' },
+    { title: "RE Verbes", image: 'images/re-verbes.jpg' },
     // { title: "Les Adjectifs", image: 'images/les-adjectifs.jpg' },
     { title: "MYP3 Unit 1", image: 'images/myp3-unit1.jpg'}
   ];
