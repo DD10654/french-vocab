@@ -50,28 +50,30 @@ const Play = () => {
     }
   }, [testMode, navigate]);
 
-const fetchQuestionArray = async (theme) => {
-    const exercisesCollectionRef = collection(db, 'exercises');
-    const docRef = doc(exercisesCollectionRef, `french-b1/${theme}/vocab`);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
-
-      questionArray.forEach((innerArray, i) => {
-        innerArray.forEach((str, j) => {
-          if (typeof str === 'string') {
-            questionArray[i][j] = str.replace(/’/g, "'");
-            questionArray[i][j] = str.replace(/…/g, "...");
+        const fetchQuestionArray = async (theme) => {
+          const exercisesCollectionRef = collection(db, 'exercises');
+          const docRef = doc(exercisesCollectionRef, `french-b1/${theme}/vocab`);
+          const docSnap = await getDoc(docRef);
+        
+          if (docSnap.exists()) {
+          const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
+            
+            questionArray.forEach((innerArray, i) => {
+              innerArray.forEach((str, j) => {
+                if (typeof str === 'string') {
+                  str = str.replace(/\u2019/g, "'");
+                  str = str.replace(/…/g, "...");
+                  questionArray[i][j] = str;
+                }
+              });
+            });
+        
+            return questionArray;
+          } else {
+            return [];
           }
-        });
-      });
-
-      return questionArray;
-    } else {
-      return [];
-  }
-};
+        };
+        
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -250,5 +252,5 @@ const buttons = letters.map((letter) =>
     </div>
   );
 };
-
+}
 export default Play;
