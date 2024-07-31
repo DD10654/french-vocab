@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDoc, doc } from 'firebase/firestore';
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyAUweFZXPiDf94j_HNs6-Vw_zBUlFiSVCk",
   authDomain: "french-vocab-aae9e.firebaseapp.com",
@@ -30,7 +29,8 @@ const Play = () => {
   const [numberOfCorrectAnswers, setCorrectAnswers] = useState(0)
   const [numberOfIncorrectAnswers, setIncorrectAnswers] = useState(0)
   const [runCheckAnswer, setCheckAnswer] = useState(true)
-  const [ failed, setFailed ] = useState("bg-gray-100")
+  const [failed, setFailed] = useState("bg-gray-100")
+  const [isRandomized, setIsRandomized] = useState(false);
 
   useEffect(() => {
     if (!theme) {
@@ -45,42 +45,46 @@ const Play = () => {
   }, [numberOfQuestions, navigate]);
 
   useEffect(() => {
-    if (testMode == undefined) {
+    if (testMode === undefined) {
       navigate('/', { replace: true });
     }
   }, [testMode, navigate]);
 
-        const fetchQuestionArray = async (theme) => {
-          const exercisesCollectionRef = collection(db, 'exercises');
-          const docRef = doc(exercisesCollectionRef, `french-b1/${theme}/vocab`);
-          const docSnap = await getDoc(docRef);
+  const fetchQuestionArray = async (theme) => {
+    try {
+      const exercisesCollectionRef = collection(db, 'exercises');
+      const docRef = doc(exercisesCollectionRef, `french-b1/${theme}/vocab`);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
+  
+        questionArray.forEach((innerArray, i) => {
+          innerArray.forEach((str, j) => {
+            if (typeof str === 'string') {
+              str = str.replace(/\u2019/g, "'");
+              str = str.replace(/…/g, "...");
+              questionArray[i][j] = str;
+            }
+          });
+        });
+  
+        return questionArray;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
         
-          if (docSnap.exists()) {
-          const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
-            
-            questionArray.forEach((innerArray, i) => {
-              innerArray.forEach((str, j) => {
-                if (typeof str === 'string') {
-                  str = str.replace(/\u2019/g, "'");
-                  str = str.replace(/…/g, "...");
-                  questionArray[i][j] = str;
-                }
-              });
-            });
-        
-            return questionArray;
-          } else {
-            return [];
-          }
-        };
-        
-
   useEffect(() => {
     const fetchQuestions = async () => {
       const questionArray = await fetchQuestionArray(theme);
       setQuestionArray(questionArray);
     };
-    fetchQuestions(theme);
+    fetchQuestions();
   }, [theme]);
 
   const randomizeArray = useCallback(() => {
@@ -99,50 +103,47 @@ const Play = () => {
         newArray[i][1] = temp;
       }
     }
-    if (numberOfQuestions == true) {
+
+    if (numberOfQuestions) {
+      setQuestionArray(newArray.slice(0, numberOfQuestions));
+    } else {
       setQuestionArray(newArray);
     }
-    else {
-      setQuestionArray(newArray.slice(0, numberOfQuestions));
-    }
-  }, [questionArray]);
-
-  const [isRandomized, setIsRandomized] = useState(false);
+  }, [questionArray, numberOfQuestions]);
 
   useEffect(() => {
     if (!isRandomized && questionArray.length > 0) {
       randomizeArray();
       setIsRandomized(true);
     }
-  }, [questionArray, isRandomized]);
+  }, [questionArray, isRandomized, randomizeArray]);
 
-  const correctSound = new Audio('/correct.mp3')
-
-  const wrongSound = new Audio('/wrong.mp3')
+  const correctSound = new Audio('/correct.mp3');
+  const wrongSound = new Audio('/wrong.mp3');
 
   function checkAnswer(answer) {
     if (answer.toLowerCase().trim() === questionArray[currentIndex][1].toLowerCase()) {
       setCorrectArray([...correctArray, questionArray[currentIndex]]);
       setResult('Correct!');
-      setCorrectAnswers(numberOfCorrectAnswers + 1)
-      correctSound.play()
+      setCorrectAnswers(numberOfCorrectAnswers + 1);
+      correctSound.play();
     } else {
       setWrongArray([...wrongArray, questionArray[currentIndex]]);
       setResult(`Incorrect. The correct answer is ${questionArray[currentIndex][1]}`);
-      setIncorrectAnswers(numberOfIncorrectAnswers + 1)
-      wrongSound.play()
+      setIncorrectAnswers(numberOfIncorrectAnswers + 1);
+      wrongSound.play();
     }
     setShowResult(true);
-    setCheckAnswer(false)
-      if (testMode == true) {
-      if (numberOfIncorrectAnswers == 2) {
-        setFailed("bg-red-200")
+    setCheckAnswer(false);
+    if (testMode) {
+      if (numberOfIncorrectAnswers === 2) {
+        setFailed("bg-red-200");
       }
       if (numberOfIncorrectAnswers >= 3) {
         navigate('/done', { replace: true, state: { failed: true } });
       }
-      }
-}
+    }
+  }
 
   function checkArray() {
     if (currentIndex >= questionArray.length && wrongArray.length > 0) {
@@ -164,40 +165,40 @@ const Play = () => {
     }
   }, [currentIndex, questionArray]);
 
-    const handleNextQuestion = () => {
+  const handleNextQuestion = () => {
     setShowResult(false);
     setCurrentIndex(currentIndex + 1);
     setAnswer('');
-    setCheckAnswer(true)
+    setCheckAnswer(true);
   }
 
   const handleCheckAnswer = () => {
-    if (runCheckAnswer == true) {
-    checkAnswer(answer);
+    if (runCheckAnswer) {
+      checkAnswer(answer);
+    } else {
+      handleNextQuestion();
     }
-    else {
-      handleNextQuestion()
   };
-    
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleCheckAnswer();
     }
   };
 
-const letters = ["à", "á", "â", "è", "é", "ê", "î", "í", "ô", "œ", "û", "ç"];
-const buttons = letters.map((letter) =>
-  <button
-        className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md mx-1"
-        onClick={() => setAnswer(answer + letter)}
-        key={letter}
-      >
-        {letter}
-  </button>
-);
+  const letters = ["à", "á", "â", "è", "é", "ê", "î", "í", "ô", "œ", "û", "ç"];
+  const buttons = letters.map((letter) =>
+    <button
+      className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md mx-1"
+      onClick={() => setAnswer(answer + letter)}
+      key={letter}
+    >
+      {letter}
+    </button>
+  );
 
   return (
-<div className={`h-screen ${failed}`}>
+    <div className={`h-screen ${failed}`}>
       <nav className="bg-[#2c3e50] py-4">
         <h1 className="text-lg font-bold text-center text-white">Play - {theme}</h1>
       </nav>
@@ -224,7 +225,7 @@ const buttons = letters.map((letter) =>
           </button>
         </div>
       </div>
-      <div className="flex flex-wrap justify-center gap-2 mt-4">                
+      <div className="flex flex-wrap justify-center gap-2 mt-4">
         {buttons}
       </div>
       <div className="grid justify-center mt-4">
@@ -236,21 +237,21 @@ const buttons = letters.map((letter) =>
         </h2>
       </div>
       {showResult && (
-          <div className="flex justify-center mt-4">
-            <h2 className="text-lg font-bold">{result}</h2>
-          </div>
-        )}
-                <div className="flex justify-center mt-4">
-          <button
-            className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md"
-            onClick={() => handleNextQuestion()}
-            style={{ display: `${showResult === true ? 'block' : 'none'}` }}
-          >
-            Next Question
-          </button>
+        <div className="flex justify-center mt-4">
+          <h2 className="text-lg font-bold">{result}</h2>
         </div>
+      )}
+      <div className="flex justify-center mt-4">
+        <button
+          className="px-4 py-2 bg-[#3498db] hover:bg-[#2c3e50] text-white rounded-md"
+          onClick={handleNextQuestion}
+          style={{ display: showResult ? 'block' : 'none' }}
+        >
+          Next Question
+        </button>
+      </div>
     </div>
   );
 };
-}
+
 export default Play;
