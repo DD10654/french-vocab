@@ -104,7 +104,7 @@ const Play = () => {
       }
     }
 
-    if (numberOfQuestions) {
+    if (numberOfQuestions != true) {
       setQuestionArray(newArray.slice(0, numberOfQuestions));
     } else {
       setQuestionArray(newArray);
