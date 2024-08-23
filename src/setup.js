@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Setup = () => {
-    const [ numberOfQuestions, setNOQ] = useState(true)
-    const [ testMode, setTM ] = useState(false)
+    const [ numberOfQuestions, setNOQ ] = useState(true)
     const location = useLocation();
     const navigate = useNavigate();
     const { theme } = location.state || {};
@@ -14,10 +13,10 @@ const Setup = () => {
       }
     }, [theme, navigate]);
 
-    useEffect(() => {}, [numberOfQuestions, testMode])
+    useEffect(() => {}, [numberOfQuestions])
 
     function handleStart() {
-        navigate('/play', { state: { theme: theme, numberOfQuestions: numberOfQuestions, testMode: testMode }, replace: true });
+        navigate('/play', { state: { theme: theme, numberOfQuestions: numberOfQuestions }, replace: true });
     }
 
     return (
@@ -55,27 +54,6 @@ const Setup = () => {
           >
             All
           </button>
-        </div>
-              {// Test Mode
-      }
-        <div className="flex justify-center mt-4">
-            <h2 className="text-lg font-bold">Choose if you want the exercise to be in test mode</h2>
-        </div>
-        <div className="grid grid-cols-2 mx-5 justify-center gap-2 mt-4">
-          <button
-            className={`px-4 py-2 text-white rounded-md ${testMode === false ? "bg-[#2c3e50] hover:bg-[#3498db]" : "bg-[#3498db] hover:bg-[#2c3e50]"}`}
-            onClick={() => setTM(false)}
-          >
-            Normal Mode
-          </button>
-          <button
-            className={`px-4 py-2 text-white rounded-md ${testMode === true ? "bg-[#2c3e50] hover:bg-[#3498db]" : "bg-[#3498db] hover:bg-[#2c3e50]"}`}
-            onClick={() => setTM(true)}
-          >
-            Test Mode
-          </button>
-
-        </div>
         {// Start
         }
         <div className="grid grid-cols-1 mx-5 justify-center gap-2 mt-8">
@@ -83,9 +61,10 @@ const Setup = () => {
             className={"px-4 py-2 text-white rounded-md bg-[#3498db] hover:bg-[#2c3e50]"}
             onClick={() => handleStart()}
           >
-            Start the exercise with {numberOfQuestions === true ? "all questions" : `${numberOfQuestions} questions`} in {testMode === true ? "test mode" : "normal mode"}
+            Start the exercise with {numberOfQuestions === true ? "all questions" : `${numberOfQuestions} questions`}
           </button>
         </div>
+      </div>
       </div>
     )
 }

@@ -18,7 +18,7 @@ const db = getFirestore(app);
 const Play = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme, numberOfQuestions, testMode } = location.state || {};
+  const { theme, numberOfQuestions } = location.state || {};
   const [answer, setAnswer] = useState('');
   const [questionArray, setQuestionArray] = useState([]);
   const [correctArray, setCorrectArray] = useState([]);
@@ -29,7 +29,6 @@ const Play = () => {
   const [numberOfCorrectAnswers, setCorrectAnswers] = useState(0)
   const [numberOfIncorrectAnswers, setIncorrectAnswers] = useState(0)
   const [runCheckAnswer, setCheckAnswer] = useState(true)
-  const [failed, setFailed] = useState("bg-gray-100")
   const [isRandomized, setIsRandomized] = useState(false);
 
   useEffect(() => {
@@ -44,12 +43,6 @@ const Play = () => {
     }
   }, [numberOfQuestions, navigate]);
 
-  useEffect(() => {
-    if (testMode === undefined) {
-      navigate('/', { replace: true });
-    }
-  }, [testMode, navigate]);
-
   const fetchQuestionArray = async (theme) => {
     try {
       const exercisesCollectionRef = collection(db, 'exercises');
@@ -57,18 +50,11 @@ const Play = () => {
       const docSnap = await getDoc(docRef);
   
       if (docSnap.exists()) {
-        const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [key, value]);
-  
-        questionArray.forEach((innerArray, i) => {
-          innerArray.forEach((str, j) => {
-            if (typeof str === 'string') {
-              str = str.replace(/\u2019/g, "'");
-              str = str.replace(/…/g, "...");
-              questionArray[i][j] = str;
-            }
-          });
-        });
-  
+        // Map over each entry and replace the characters as needed
+        const questionArray = Object.entries(docSnap.data()).map(([key, value]) => [
+          key.replace(/\u2019/g, "'").replace(/…/g, "..."),
+          value.replace(/\u2019/g, "'").replace(/…/g, "...")
+        ]);
         return questionArray;
       } else {
         return [];
@@ -135,14 +121,6 @@ const Play = () => {
     }
     setShowResult(true);
     setCheckAnswer(false);
-    if (testMode) {
-      if (numberOfIncorrectAnswers === 2) {
-        setFailed("bg-red-200");
-      }
-      if (numberOfIncorrectAnswers >= 3) {
-        navigate('/done', { replace: true, state: { failed: true } });
-      }
-    }
   }
 
   function checkArray() {
@@ -156,7 +134,7 @@ const Play = () => {
   }
 
   function endGame(navigate) {
-    navigate('/done', { replace: true, state: { failed: false } });
+    navigate('/done', { replace: true, state: { numberOfQuestions: numberOfCorrectAnswers, numberOfIncorrectAnswers: numberOfIncorrectAnswers } });
   }
 
   useEffect(() => {
@@ -198,7 +176,7 @@ const Play = () => {
   );
 
   return (
-    <div className={`h-screen ${failed}`}>
+    <div className={`h-screen`}>
       <nav className="bg-[#2c3e50] py-4">
         <h1 className="text-lg font-bold text-center text-white">Play - {theme}</h1>
       </nav>
