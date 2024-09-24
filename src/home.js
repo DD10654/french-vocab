@@ -5,6 +5,7 @@ const Home = () => {
   const themes = [
     { title: "L'internet", image: 'images/l-internet.jpg' },
     { title: "L'éducation", image: 'images/l-education.jpg' },
+    { title: "La Lecture", image: 'images/la-lecture.jpg' },
     // { title: 'La nourriture', image: 'images/la-nourriture.jpg' },
     // { title: "La santé", image: 'images/la-sante.jpg' },
     // { title: "Le séjour linguistique", image: 'images/le-sejour-linguistique.jpg' },
