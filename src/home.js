@@ -19,7 +19,9 @@ const Home = () => {
     { title: "IR Verbes", image: 'images/ir-verbes.jpg' },
     { title: "RE Verbes", image: 'images/re-verbes.jpg' },
     // { title: "Les Adjectifs", image: 'images/les-adjectifs.jpg' },
-    { title: "MYP3 Unit 1", image: 'images/myp3-unit1.jpg'}
+    { title: "MYP3 Unit 1", image: 'images/myp3-unit1.jpg'},
+    { title: "MYP3 Unit 2", image: 'images/myp3-unit1.jpg'}
+
   ];
 
   return (
